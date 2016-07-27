@@ -1,3 +1,6 @@
+.env
+.tags
+
 *.gem
 *.rbc
 /.config

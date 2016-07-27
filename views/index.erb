@@ -1,0 +1,96 @@
+<table>
+  <thead>
+    <tr>
+      <th>
+        #
+      </th>
+      <th>
+        id
+      </th>
+      <th>
+      </th>
+      <th>
+        name
+      </th>
+      <th>
+        CP
+      </th>
+      <th>
+        ACTIONS
+      </th>
+    </tr>
+  </thead>
+  <tbody>
+    <% pokemons.each do |pokemon| %>
+      <tr data-pokemon-id="<%= pokemon.id %>">
+        <td>
+          <%= pokemon.pokedex_id %>
+        </td>
+        <td>
+          <%= pokemon.id %>
+        </td>
+        <td>
+          <img src="<%= pokemon.image_path %>" alt="" />
+        </td>
+        <td>
+          <%= pokemon.name %>
+        </td>
+        <td>
+          <%= pokemon.cp %>
+        </td>
+        <td class="pokemon-release">
+          RELEASE
+        </td>
+        <td class="pokemon-evolve">
+          EVOLVE
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+<script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+<script type="text/javascript">
+  var releasePokemon = function (pokemonId) {
+    return $.ajax({
+      url: '/pokemons/'+ pokemonId +'/release'
+    })
+  };
+
+  var evolvePokemon = function (pokemonId) {
+    return $.ajax({
+      url: '/pokemons/'+ pokemonId +'/evolve'
+    })
+  };
+
+  $(document).ready(function() {
+    $('table').on('click', '.pokemon-release', function () {
+      var cell = $(this).parent('tr');
+      var pokemonId = cell.data('pokemon-id');
+
+      cell.hide();
+
+      releasePokemon(pokemonId)
+        .done(function () {
+          cell.destroy();
+        })
+        .fail(function () {
+          cell.show();
+        });
+    })
+
+    $('table').on('click', '.pokemon-evolve', function () {
+      var cell = $(this).parent('tr');
+      var pokemonId = cell.data('pokemon-id');
+
+      cell.hide();
+
+      evolvePokemon(pokemonId)
+        .done(function () {
+          cell.destroy();
+        })
+        .fail(function () {
+          cell.show();
+        });
+    })
+  });
+</script>
