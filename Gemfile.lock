@@ -1,12 +1,11 @@
 GIT
   remote: https://github.com/nabeelamjad/poke-api.git
-  revision: 3223d8bf915b5b5abecf6ddfd7f928c159746714
-  tag: 0.0.3
+  revision: 68af9884ebc6e18d3b1e85d86a136189b34ca718
   specs:
-    poke-api (0.0.3)
+    poke-api (0.0.4)
       geocoder (= 1.3.7)
       google-protobuf (~> 3.0.0.alpha)
-      gpsoauth-rb (= 0.1.1)
+      gpsoauth-rb (= 0.1.2)
       httpclient (= 2.8.0)
 
 GEM
@@ -15,7 +14,7 @@ GEM
     dotenv (2.1.1)
     geocoder (1.3.7)
     google-protobuf (3.0.0.alpha.5.0.5.1)
-    gpsoauth-rb (0.1.1)
+    gpsoauth-rb (0.1.2)
       httparty (~> 0.14)
     httparty (0.14.0)
       multi_xml (>= 0.5.2)
