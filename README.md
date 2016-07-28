@@ -4,4 +4,4 @@
 
 Add value to `.env.example` then `bundle exec ruby app.rb`
 
-Visit http://localhost:3002
+Visit [http://localhost:3002](http://localhost:3002)
