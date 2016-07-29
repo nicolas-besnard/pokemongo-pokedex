@@ -51,6 +51,36 @@
 </table>
 <script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
 <script type="text/javascript">
+  var confirmAction = function (cell, action) {
+    var pokemonId = cell.data('pokemon-id');
+
+    cell.hide();
+
+    if (action == 'evolve') {
+      evolvePokemon(pokemonId)
+        .done(function () {
+          cell.remove();
+        })
+        .fail(function (response) {
+          json = response['responseJSON']
+
+          cell.children('td').last().html(json['result']);
+          cell.show();
+        });
+    } else if (action == 'release') {
+      releasePokemon(pokemonId)
+        .done(function () {
+          cell.remove();
+        })
+        .fail(function (response) {
+          json = response['responseJSON']
+
+          cell.children('td').last().html(json['result']);
+          cell.show();
+        });
+    }
+  };
+
   var releasePokemon = function (pokemonId) {
     return $.ajax({
       url: '/pokemons/'+ pokemonId +'/release'
@@ -65,33 +95,39 @@
 
   $(document).ready(function() {
     $('table').on('click', '.pokemon-release', function () {
-      var cell = $(this).parent('tr');
-      var pokemonId = cell.data('pokemon-id');
-
-      cell.hide();
-
-      releasePokemon(pokemonId)
-        .done(function () {
-          cell.remove();
-        })
-        .fail(function () {
-          cell.show();
-        });
-    })
+      $(this).html('<a href="#" class="pokemon-release-confirm">Confirm</a> / <a href="#" class="pokemon-release-cancel">CANCEL</a>');
+    });
 
     $('table').on('click', '.pokemon-evolve', function () {
-      var cell = $(this).parent('tr');
-      var pokemonId = cell.data('pokemon-id');
+      $(this).html('<a href="#" class="pokemon-evolve-confirm">Confirm</a> / <a href="#" class="pokemon-evolve-cancel">CANCEL</a>');
+    });
 
-      cell.hide();
+    $('table').on('click', '.pokemon-release-confirm', function () {
+      var cell = $(this).closest('tr');
 
-      evolvePokemon(pokemonId)
-        .done(function () {
-          cell.remove();
-        })
-        .fail(function () {
-          cell.show();
-        });
-    })
+      confirmAction(cell, 'release');
+    });
+
+    $('table').on('click', '.pokemon-release-cancel', function (event) {
+      event.preventDefault();
+
+      $(this).parent('td').html('RELEASE');
+
+      return false;
+    });
+
+    $('table').on('click', '.pokemon-evolve-confirm', function () {
+      var cell = $(this).closest('tr');
+
+      confirmAction(cell, 'evolve');
+    });
+
+    $('table').on('click', '.pokemon-evolve-cancel', function (event) {
+      event.preventDefault();
+
+      $(this).parent('td').html('EVOLVE');
+
+      return false;
+    });
   });
 </script>

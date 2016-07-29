@@ -94,6 +94,7 @@ get '/pokemons/:pokemon_id/release' do
     status 400
   end
 
+  content_type :json
   t.to_json
 end
 
@@ -102,11 +103,12 @@ get '/pokemons/:pokemon_id/evolve' do
 
   t = client.call.response[:EVOLVE_POKEMON]
 
-  failure = t[:result] == :FAILED
+  failure = (t[:result] != :SUCCESS)
 
   if failure
     status 400
   end
 
+  content_type :json
   t.to_json
 end
