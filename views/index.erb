@@ -16,6 +16,9 @@
         # Candies
       </th>
       <th>
+        Pokedex
+      </th>
+      <th>
         ACTIONS
       </th>
     </tr>
@@ -38,6 +41,15 @@
         </td>
         <td>
           <%= candies[pokemon.name.to_sym] %>
+        </td>
+        <td>
+          <ul>
+            <% pokedex[pokemon.name.to_sym].keys.each do |key|  %>
+              <li>
+                <%= key %>: <%= pokedex[pokemon.name.to_sym][key] %>
+              </li>
+            <% end %>
+          </ul>
         </td>
         <td class="pokemon-release">
           RELEASE

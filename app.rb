@@ -36,6 +36,7 @@ client.login(email, password, type)
 require_relative 'lib/pokemon'
 
 @candies = {}
+@items = {}
 
 def get_pokemons(client, sort: :id)
   client.get_inventory
@@ -46,6 +47,8 @@ def get_pokemons(client, sort: :id)
 
   pokemons = []
   @candies = {}
+  @items = {}
+  @pokedex = {}
 
   inventory.each do |item|
     if !item[:inventory_item_data][:pokemon_data].nil?
@@ -53,10 +56,21 @@ def get_pokemons(client, sort: :id)
     elsif !item[:inventory_item_data][:pokemon_family].nil?
       family = item[:inventory_item_data][:pokemon_family][:family_id]
       family = family.to_s.split('FAMILY_').last
-
-      pp item[:inventory_item_data][:pokemon_family]
-
       @candies[family.to_sym] = item[:inventory_item_data][:pokemon_family][:candy]
+    elsif !item[:inventory_item_data][:item].nil?
+      item_id = item[:inventory_item_data][:item][:item_id]
+      item_quantity = item[:inventory_item_data][:item][:count]
+      @items[item_id] = item_quantity
+    elsif !item[:inventory_item_data][:pokedex_entry].nil?
+      entry = item[:inventory_item_data][:pokedex_entry]
+
+      pokemon_name = entry.delete(:pokemon_id)
+      entry.delete(:evolution_stone_pieces)
+      entry.delete(:evolution_stones)
+
+      @pokedex[pokemon_name] = entry
+    else
+      pp item
     end
   end
 
@@ -69,12 +83,14 @@ def get_pokemons(client, sort: :id)
     nil
   end
 
+  pp @items
+
   pokemons
 end
 
 get '/' do
   pokemons = get_pokemons(client)
-  erb :index, locals: { pokemons: pokemons, candies: @candies }
+  erb :index, locals: { pokemons: pokemons, candies: @candies, pokedex: @pokedex }
 end
 
 get '/pokemons' do
