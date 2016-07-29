@@ -1,3 +1,5 @@
+require 'poke-api/POGOProtos/Enums/PokemonId'
+
 class Pokemon
   attr_accessor :id, :name, :pokedex_id, :raw_response, :cp
 
@@ -15,7 +17,7 @@ class Pokemon
       id: response[:id],
       name: response[:pokemon_id],
       cp: response[:cp],
-      pokedex_id: RpcEnum::PokemonId.resolve(response[:pokemon_id].to_sym),
+      pokedex_id: POGOProtos::Enums::PokemonId.const_get(response[:pokemon_id].to_sym),
       raw_response: response
     )
   end

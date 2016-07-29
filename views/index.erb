@@ -5,9 +5,6 @@
         #
       </th>
       <th>
-        id
-      </th>
-      <th>
       </th>
       <th>
         name
@@ -16,18 +13,19 @@
         CP
       </th>
       <th>
+        # Candies
+      </th>
+      <th>
         ACTIONS
       </th>
     </tr>
   </thead>
   <tbody>
+
     <% pokemons.each do |pokemon| %>
       <tr data-pokemon-id="<%= pokemon.id %>">
         <td>
           <%= pokemon.pokedex_id %>
-        </td>
-        <td>
-          <%= pokemon.id %>
         </td>
         <td>
           <img src="<%= pokemon.image_path %>" alt="" />
@@ -37,6 +35,9 @@
         </td>
         <td>
           <%= pokemon.cp %>
+        </td>
+        <td>
+          <%= candies[pokemon.name.to_sym] %>
         </td>
         <td class="pokemon-release">
           RELEASE
@@ -71,7 +72,7 @@
 
       releasePokemon(pokemonId)
         .done(function () {
-          cell.destroy();
+          cell.remove();
         })
         .fail(function () {
           cell.show();
@@ -86,7 +87,7 @@
 
       evolvePokemon(pokemonId)
         .done(function () {
-          cell.destroy();
+          cell.remove();
         })
         .fail(function () {
           cell.show();

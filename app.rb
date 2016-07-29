@@ -35,29 +35,46 @@ client.login(email, password, type)
 ##
 require_relative 'lib/pokemon'
 
+@candies = {}
+
 def get_pokemons(client, sort: :id)
   client.get_inventory
 
   response = client.call.response
 
-  pp response
-
   inventory = response[:GET_INVENTORY][:inventory_delta][:inventory_items]
-    .map { |item| Pokemon.from_api(item[:inventory_item_data][:pokemon]) }
-    .compact
+
+  pokemons = []
+  @candies = {}
+
+  inventory.each do |item|
+    if !item[:inventory_item_data][:pokemon_data].nil?
+      pokemons << Pokemon.from_api(item[:inventory_item_data][:pokemon_data])
+    elsif !item[:inventory_item_data][:pokemon_family].nil?
+      family = item[:inventory_item_data][:pokemon_family][:family_id]
+      family = family.to_s.split('FAMILY_').last
+
+      pp item[:inventory_item_data][:pokemon_family]
+
+      @candies[family.to_sym] = item[:inventory_item_data][:pokemon_family][:candy]
+    end
+  end
+
+  pokemons.compact!
 
   case sort
   when :id
-    inventory.sort_by! { |item| item.pokedex_id }
+    pokemons.sort_by! { |item| item.pokedex_id }
   else
     nil
   end
 
-  inventory
+  pokemons
 end
 
 get '/' do
-  erb :index, locals: { pokemons: get_pokemons(client) }
+  pokemons = get_pokemons(client)
+  erb :index, locals: { pokemons: pokemons, candies: @candies }
 end
 
 get '/pokemons' do
@@ -86,8 +103,6 @@ get '/pokemons/:pokemon_id/evolve' do
   t = client.call.response[:EVOLVE_POKEMON]
 
   failure = t[:result] == :FAILED
-
-  pp t
 
   if failure
     status 400
